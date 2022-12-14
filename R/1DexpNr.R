@@ -1,9 +1,10 @@
-# simple onedimesional example, using the exponential covariance.
+# simple one dimesional example, using the exponential covariance, nugget, and a 
+# linear covariate in space.
 
 require(spam)
 require(fields)
 
-theta0 <- c(.3, 1,.1)  # range, sill 
+theta0 <- c(.3, 1,.1)  # range, sill, nugget
 beta0 <- c(0,1)
 
 n <- 150
@@ -20,12 +21,13 @@ set.seed(12)
 xapp <- c(1:n)/(1+n)
 xper <- xapp + runif(n, -perDelta, perDelta)
 
-X <- cbind(1, xper)
+Xapp <- cbind(1, xapp)
+Xper <- cbind(1, xper)
 
 happ <- as.matrix( dist( xapp))
 hper <- as.matrix( dist( xper))
 
-yR <- rmvnorm(R, mu=X%*%beta0, Sigma=cov.exp(hper, theta0))
+yR <- rmvnorm(R, mu=Xper%*%beta0, Sigma=cov.exp(hper, theta0))
 
 Rsel <- 3
 
@@ -36,9 +38,9 @@ for (Rsel in 1:R) {
 
 y <- c(yR[Rsel,])
 
-(parsper <- mle( y, X, hper, cov.exp, beta0, theta0, thetalower=c(0.01,0.01,0.01),
+(parsper <- mle( y, Xper, hper, cov.exp, beta0, theta0, thetalower=c(0.01,0.01,0.01),
              thetaupper=Inf)[c(1,2,4)]) 
-(parsapp <- mle( y, X, happ, cov.exp, beta0, theta0, thetalower=c(0.01,.01,.01),
+(parsapp <- mle( y, Xapp, happ, cov.exp, beta0, theta0, thetalower=c(0.01,.01,.01),
              thetaupper=Inf)[c(1,2,4)]) 
 
 

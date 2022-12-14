@@ -3,7 +3,7 @@
 require(spam)
 require(fields)
 
-theta0 <- c(.3, 1,.1)  # range, sill 
+theta0 <- c(.3, 1,.1)  # range, sill, nugget
 
 n <- 150
 R <- 100
